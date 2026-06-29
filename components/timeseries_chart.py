@@ -1,7 +1,4 @@
-"""
-Biểu đồ chuỗi thời gian độ mặn 7 ngày + dự báo AI.
-Sử dụng plotly.graph_objects với nền dark và đường ngưỡng nguy hiểm.
-"""
+"""Salinity time-series chart with 7-day history and AI forecast."""
 
 import plotly.graph_objects as go
 import streamlit as st
@@ -16,18 +13,18 @@ from state.session_manager import get_active_station_id, get_simulation_mode
 
 
 def _dark_chart_layout(title: str) -> dict:
-    """Layout chung cho biểu đồ dark-mode."""
+    """Shared dark-mode chart layout."""
     return dict(
         title=dict(text=title, font=dict(color="#e2e8f0", size=16)),
         xaxis=dict(
-            title="Thời gian",
+            title="Time",
             color="#94a3b8",
             gridcolor="rgba(148, 163, 184, 0.12)",
             showgrid=True,
             zeroline=False,
         ),
         yaxis=dict(
-            title="Độ mặn (‰)",
+            title="Salinity (ppt)",
             color="#94a3b8",
             gridcolor="rgba(148, 163, 184, 0.12)",
             showgrid=True,
@@ -51,7 +48,7 @@ def _dark_chart_layout(title: str) -> dict:
 
 
 def render_timeseries_chart() -> None:
-    """Render biểu đồ lịch sử 7 ngày và dự báo AI (khi ở chế độ alert)."""
+    """Render 7-day historical chart and AI forecast when alert mode is active."""
     station_id = get_active_station_id()
     mode = get_simulation_mode()
 
@@ -60,30 +57,27 @@ def render_timeseries_chart() -> None:
 
     fig = go.Figure()
 
-    # ── Dữ liệu lịch sử: đường xanh liền nét + marker ──
     fig.add_trace(
         go.Scatter(
             x=historical["timestamp"],
             y=historical["salinity_ppt"],
             mode="lines+markers",
-            name="Dữ liệu IoT (7 ngày)",
+            name="IoT Readings (7 days)",
             line=dict(color="#38bdf8", width=2.5),
             marker=dict(size=6, color="#38bdf8", line=dict(width=1, color="#0ea5e9")),
         )
     )
 
-    # ── Đường ngưỡng nguy hiểm ──
     fig.add_hline(
         y=THRESHOLDS["salinity_danger_ppt"],
         line_dash="dash",
         line_color="#ef4444",
         line_width=2,
-        annotation_text=f"Ngưỡng nguy hiểm ({THRESHOLDS['salinity_danger_ppt']} ‰)",
+        annotation_text=f"Danger Threshold ({THRESHOLDS['salinity_danger_ppt']} ppt)",
         annotation_position="top right",
         annotation_font_color="#f87171",
     )
 
-    # ── Dự báo AI: chỉ hiển thị khi chế độ alert ──
     if mode == "alert":
         last_value = float(historical["salinity_ppt"].iloc[-1])
         forecast = generate_forecast_series(station_id, last_value)
@@ -93,7 +87,7 @@ def render_timeseries_chart() -> None:
                 x=forecast["timestamp"],
                 y=forecast["salinity_ppt"],
                 mode="lines+markers",
-                name="Dự báo AI (7 ngày tới)",
+                name="AI Forecast (7-day outlook)",
                 line=dict(color="#f97316", width=2.5, dash="dash"),
                 marker=dict(
                     size=8,
@@ -104,14 +98,13 @@ def render_timeseries_chart() -> None:
             )
         )
 
-        # Đánh dấu đỉnh dự báo
         peak_idx = forecast["salinity_ppt"].idxmax()
         peak_val = forecast.loc[peak_idx, "salinity_ppt"]
         peak_time = forecast.loc[peak_idx, "timestamp"]
         fig.add_annotation(
             x=peak_time,
             y=peak_val,
-            text=f"Đỉnh dự báo: {peak_val:.2f} ‰",
+            text=f"Forecast peak: {peak_val:.2f} ppt",
             showarrow=True,
             arrowhead=2,
             arrowcolor="#f97316",
@@ -121,8 +114,8 @@ def render_timeseries_chart() -> None:
         )
 
     chart_title = (
-        f"Chuỗi thời gian độ mặn — {station_id} "
-        f"(Hiện tại: {snapshot['salinity_ppt']:.2f} ‰)"
+        f"Salinity Time Series — {station_id} "
+        f"(Current: {snapshot['salinity_ppt']:.2f} ppt)"
     )
     fig.update_layout(**_dark_chart_layout(chart_title), height=420)
 

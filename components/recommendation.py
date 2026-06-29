@@ -1,7 +1,4 @@
-"""
-Engine khuyến nghị hành động theo mức rủi ro.
-Thay đổi layout và gradient theo trạng thái Safe / Critical.
-"""
+"""Action recommendation engine based on salinity risk level."""
 
 import streamlit as st
 
@@ -10,25 +7,24 @@ from data.simulation import build_station_snapshot
 from state.session_manager import get_active_station_id, get_simulation_mode
 
 
-# Khuyến nghị theo từng mức rủi ro — dễ mở rộng thêm rule engine
 _SAFE_ACTIONS = [
-    "Tiếp tục bơm nước ngọt theo lịch trình vận hành.",
-    "Duy trì giám sát cảm biến mỗi 15 phút.",
-    "Kiểm tra van điều tiết cửa đập — vận hành bình thường.",
-    "Cập nhật dữ liệu cho trung tâm điều hành huyện.",
+    "Continue freshwater pumping according to the scheduled operation plan.",
+    "Maintain IoT sensor monitoring at 15-minute intervals.",
+    "Inspect sluice gate control valves — operating normally.",
+    "Report readings to the district operations center.",
 ]
 
 _CRITICAL_ACTIONS = [
-    "ĐÓNG NGAY tất cả cửa đập và van điều tiết.",
-    "Ngừng bơm nước — chuyển sang nguồn dự trữ nội bộ.",
-    "Thông báo khẩn cho nông dân trong bán kính 5 km.",
-    "Kích hoạt quy trình ứng phó xâm nhập mặn cấp huyện.",
-    "Theo dõi liên tục dự báo AI trong 7 ngày tới.",
+    "CLOSE all sluice gates and control valves immediately.",
+    "Stop water pumping — switch to internal reserve supply.",
+    "Issue urgent alerts to farmers within a 5 km radius.",
+    "Activate district-level salinity intrusion response protocol.",
+    "Monitor AI forecast continuously over the next 7 days.",
 ]
 
 
 def render_recommendation() -> None:
-    """Render thẻ khuyến nghị với styling động theo mức rủi ro."""
+    """Render the Safe / Critical recommendation card."""
     station_id = get_active_station_id()
     mode = get_simulation_mode()
     snapshot = build_station_snapshot(station_id, mode)
@@ -40,13 +36,13 @@ def render_recommendation() -> None:
         title_class = "rec-title-critical"
         title = "🔴 CRITICAL: CLOSE SLUICE GATES IMMEDIATELY"
         ai_note = (
-            " Dự báo AI xác nhận xu hướng xâm nhập mặn trong 7 ngày tới."
+            " AI forecast confirms rising salinity intrusion over the next 7 days."
             if mode == "alert"
             else ""
         )
         subtitle = (
-            f"Độ mặn hiện tại **{snapshot['salinity_ppt']:.2f} ‰** "
-            f"vượt ngưỡng an toàn **{THRESHOLDS['salinity_danger_ppt']} ‰**.{ai_note}"
+            f"Current salinity **{snapshot['salinity_ppt']:.2f} ppt** exceeds the safe limit of "
+            f"**{THRESHOLDS['salinity_danger_ppt']} ppt**.{ai_note}"
         )
         actions = _CRITICAL_ACTIONS
     else:
@@ -54,8 +50,8 @@ def render_recommendation() -> None:
         title_class = "rec-title-safe"
         title = "🟢 SAFE TO PUMP WATER"
         subtitle = (
-            f"Độ mặn **{snapshot['salinity_ppt']:.2f} ‰** nằm trong ngưỡng an toàn "
-            f"(< {THRESHOLDS['salinity_danger_ppt']} ‰). Hệ thống vận hành bình thường."
+            f"Salinity **{snapshot['salinity_ppt']:.2f} ppt** is within the safe operating range "
+            f"(< {THRESHOLDS['salinity_danger_ppt']} ppt). System operating normally."
         )
         actions = _SAFE_ACTIONS
 

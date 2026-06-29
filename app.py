@@ -1,7 +1,4 @@
-"""
-SaltWatch — Giám sát độ mặn siêu cục bộ & Dự báo AI
-Đồng bằng sông Cửu Long, tỉnh Bến Tre, Việt Nam.
-"""
+"""SaltWatch — Hyper-local Salinity Monitoring & AI Forecasting, Mekong Delta."""
 
 import streamlit as st
 
@@ -15,7 +12,7 @@ from state.session_manager import init_session_state
 from styles.theme import inject_theme, render_app_header
 
 st.set_page_config(
-    page_title=f"{APP_CONFIG['name']} | Giám sát độ mặn Bến Tre",
+    page_title=f"{APP_CONFIG['name']} | Salinity Monitoring — Ben Tre",
     page_icon="🌊",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -23,7 +20,7 @@ st.set_page_config(
 
 
 def main() -> None:
-    """Luồng chính của dashboard."""
+    """Main dashboard entry point."""
     init_session_state()
     inject_theme()
     render_app_header(APP_CONFIG["name"], APP_CONFIG["subtitle"])
@@ -38,7 +35,7 @@ def main() -> None:
     render_map_and_nav()
 
     st.markdown("---")
-    st.markdown("#### 📈 Phân tích chuỗi thời gian & Dự báo AI")
+    st.markdown("#### 📈 Time Series Analysis & AI Forecast")
     render_timeseries_chart()
 
 

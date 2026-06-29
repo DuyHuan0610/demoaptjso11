@@ -1,13 +1,10 @@
-"""
-Cấu hình toàn cục: ngưỡng cảnh báo, bản đồ, và thông số ứng dụng.
-Tập trung hóa các hằng số để dễ bảo trì và kiểm thử.
-"""
+"""Global configuration: alert thresholds, map settings, and application metadata."""
 
 from typing import TypedDict
 
 
 class ThresholdConfig(TypedDict):
-    """Định nghĩa các ngưỡng đo lường môi trường."""
+    """Environmental measurement threshold definitions."""
 
     salinity_danger_ppt: float
     ph_acidic_max: float
@@ -15,7 +12,7 @@ class ThresholdConfig(TypedDict):
 
 
 class MapConfig(TypedDict):
-    """Cấu hình bản đồ Folium/Carto cho khu vực Bến Tre."""
+    """Folium/Carto map configuration for Ben Tre Province."""
 
     tile_provider: str
     center_lat: float
@@ -24,21 +21,20 @@ class MapConfig(TypedDict):
 
 
 class AppConfig(TypedDict):
-    """Metadata ứng dụng."""
+    """Application metadata."""
 
     name: str
     subtitle: str
     region: str
 
 
-# Ngưỡng độ mặn nguy hiểm theo tiêu chuẩn nông nghiệp ĐBSCL (ppt = ‰)
+# Salinity danger threshold — Mekong Delta agricultural standard (ppt = parts per thousand)
 THRESHOLDS: ThresholdConfig = {
     "salinity_danger_ppt": 2.0,
     "ph_acidic_max": 6.5,
     "ph_alkaline_min": 8.5,
 }
 
-# Trung tâm bản đồ: tỉnh Bến Tre
 MAP_CONFIG: MapConfig = {
     "tile_provider": "CartoDB dark_matter",
     "center_lat": 10.08,
@@ -48,6 +44,6 @@ MAP_CONFIG: MapConfig = {
 
 APP_CONFIG: AppConfig = {
     "name": "SaltWatch",
-    "subtitle": "Giám sát độ mặn siêu cục bộ & Dự báo AI — Đồng bằng sông Cửu Long",
-    "region": "Tỉnh Bến Tre, Việt Nam",
+    "subtitle": "Hyper-local Salinity Monitoring & AI Forecasting — Mekong Delta",
+    "region": "Ben Tre Province, Vietnam",
 }

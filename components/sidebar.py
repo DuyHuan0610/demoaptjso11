@@ -1,6 +1,4 @@
-"""
-Sidebar — điều khiển cảnh báo AI và thông tin trạm đang giám sát.
-"""
+"""Sidebar — AI alert controls and active station information."""
 
 import streamlit as st
 
@@ -14,19 +12,19 @@ from state.session_manager import (
 
 
 def render_sidebar() -> None:
-    """Render sidebar với toggle cảnh báo AI và metadata trạm."""
+    """Render the sidebar with alert toggle and station metadata."""
     with st.sidebar:
-        st.markdown("### ⚙️ Bảng điều khiển")
+        st.markdown("### ⚙️ Control Panel")
         st.markdown("---")
 
         current_mode = get_simulation_mode()
         is_alert = current_mode == "alert"
 
-        st.markdown("**Dự báo xâm nhập mặn**")
+        st.markdown("**Salinity Intrusion Forecast**")
         alert_enabled = st.toggle(
-            "Kích hoạt cảnh báo AI",
+            "Enable AI Intrusion Alert",
             value=is_alert,
-            help="Hiển thị dự báo xâm nhập mặn 7 ngày và khuyến nghị khẩn cấp",
+            help="Display 7-day salinity forecast and emergency recommendations",
             key="alert_toggle",
         )
 
@@ -36,12 +34,12 @@ def render_sidebar() -> None:
             st.rerun()
 
         if alert_enabled:
-            st.error("🔴 Trạng thái: CẢNH BÁO XÂM NHẬP MẶN")
+            st.error("🔴 Status: SALINITY INTRUSION ALERT")
         else:
-            st.success("🟢 Trạng thái: ĐIỀU KIỆN BÌNH THƯỜNG")
+            st.success("🟢 Status: NORMAL CONDITIONS")
 
         st.markdown("---")
-        st.markdown("**Trạm đang chọn**")
+        st.markdown("**Active Station**")
         station = get_station(get_active_station_id())
         st.info(
             f"**{station['id']}** ({station['name']})\n\n"
@@ -49,10 +47,10 @@ def render_sidebar() -> None:
         )
 
         st.markdown("---")
-        st.markdown("**Ngưỡng cảnh báo**")
+        st.markdown("**Alert Thresholds**")
         st.caption(
-            f"Độ mặn nguy hiểm: **≥ {THRESHOLDS['salinity_danger_ppt']} ‰**\n\n"
-            f"pH tối ưu: **{THRESHOLDS['ph_acidic_max']} – {THRESHOLDS['ph_alkaline_min']}**"
+            f"Critical salinity: **≥ {THRESHOLDS['salinity_danger_ppt']} ppt**\n\n"
+            f"Optimal pH range: **{THRESHOLDS['ph_acidic_max']} – {THRESHOLDS['ph_alkaline_min']}**"
         )
 
         st.markdown("---")

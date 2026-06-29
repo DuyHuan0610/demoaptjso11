@@ -1,4 +1,4 @@
-"""Xử lý dữ liệu cảm biến IoT và dự báo AI."""
+"""IoT sensor data processing and AI forecasting."""
 
 from data.simulation import (
     build_station_snapshot,

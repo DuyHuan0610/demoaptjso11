@@ -1,4 +1,4 @@
-"""Các component giao diện Streamlit."""
+"""Streamlit UI components."""
 
 from components.kpi_grid import render_kpi_grid
 from components.map_view import render_map_and_nav

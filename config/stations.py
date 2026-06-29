@@ -1,18 +1,17 @@
-"""
-Dữ liệu trạm IoT thực tế tại tỉnh Bến Tre.
-Mỗi trạm bao gồm tọa độ GPS chính xác, mô tả vị trí và tham số cơ sở.
-"""
+"""IoT sensor station data for Ben Tre Province, Vietnam."""
 
 from typing import Any
 
 
-# Tọa độ tham chiếu từ các điểm quan trắc thực tế tại Bến Tre
 STATIONS: dict[str, dict[str, Any]] = {
     "SW-01": {
         "id": "SW-01",
         "name": "Binh Dai",
-        "location_label": "Cửa đập Bình Thới",
-        "description": "Trạm giám sát tại cửa đập Bình Thới, huyện Bình Đại — cửa ngõ nước mặn đầu tiên.",
+        "location_label": "Binh Thoi Sluice Gate",
+        "description": (
+            "Monitoring station at Binh Thoi Sluice Gate, Binh Dai District — "
+            "primary entry point for saline water intrusion."
+        ),
         "latitude": 10.0684,
         "longitude": 106.7128,
         "baseline": {
@@ -25,8 +24,11 @@ STATIONS: dict[str, dict[str, Any]] = {
     "SW-02": {
         "id": "SW-02",
         "name": "Ba Tri",
-        "location_label": "Sông Hàm Luông",
-        "description": "Trạm đặt trên sông Hàm Luông, huyện Ba Tri — khu vực nuôi trồng thủy sản trọng điểm.",
+        "location_label": "Ham Luong River",
+        "description": (
+            "Monitoring station on the Ham Luong River, Ba Tri District — "
+            "key aquaculture production zone."
+        ),
         "latitude": 9.9512,
         "longitude": 106.5841,
         "baseline": {
@@ -39,8 +41,11 @@ STATIONS: dict[str, dict[str, Any]] = {
     "SW-03": {
         "id": "SW-03",
         "name": "Cho Lach",
-        "location_label": "Khu vực ươm giống nước ngọt",
-        "description": "Trạm tại khu ươm giống cây trồng nước ngọt, huyện Chợ Lách — nhạy cảm cao với xâm nhập mặn.",
+        "location_label": "Freshwater Seedling Area",
+        "description": (
+            "Monitoring station in the freshwater seedling nursery zone, Cho Lach District — "
+            "highly sensitive to salinity intrusion."
+        ),
         "latitude": 10.2236,
         "longitude": 106.6187,
         "baseline": {
@@ -53,8 +58,11 @@ STATIONS: dict[str, dict[str, Any]] = {
     "SW-04": {
         "id": "SW-04",
         "name": "Thanh Phu",
-        "location_label": "Đầu nguồn sông Cổ Chiên",
-        "description": "Trạm tại đầu nguồn sông Cổ Chiên, huyện Thạnh Phú — ranh giới nước ngọt - nước lợ.",
+        "location_label": "Co Chien River Headwaters",
+        "description": (
+            "Monitoring station at the Co Chien River headwaters, Thanh Phu District — "
+            "freshwater–brackish water transition zone."
+        ),
         "latitude": 10.0819,
         "longitude": 106.5213,
         "baseline": {
@@ -68,15 +76,12 @@ STATIONS: dict[str, dict[str, Any]] = {
 
 
 def get_station_ids() -> list[str]:
-    """Trả về danh sách ID trạm theo thứ tự hiển thị."""
+    """Return station IDs in display order."""
     return list(STATIONS.keys())
 
 
 def get_station(station_id: str) -> dict[str, Any]:
-    """
-    Lấy thông tin trạm theo ID.
-    Ném KeyError nếu ID không hợp lệ — fail-fast để phát hiện lỗi sớm.
-    """
+    """Return station metadata by ID."""
     if station_id not in STATIONS:
-        raise KeyError(f"Trạm không tồn tại: {station_id}")
+        raise KeyError(f"Station not found: {station_id}")
     return STATIONS[station_id]

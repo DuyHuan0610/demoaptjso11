@@ -1,7 +1,4 @@
-"""
-Quản lý trạng thái toàn cục qua st.session_state.
-Đồng bộ trạm đang chọn và chế độ cảnh báo trên mọi component.
-"""
+"""Global session state management via st.session_state."""
 
 from typing import Literal
 
@@ -13,7 +10,7 @@ SimulationMode = Literal["normal", "alert"]
 
 
 def init_session_state() -> None:
-    """Khởi tạo session state với giá trị mặc định."""
+    """Initialize session state with default values."""
     defaults: dict[str, str] = {
         "active_station_id": get_station_ids()[0],
         "simulation_mode": "normal",
@@ -24,25 +21,25 @@ def init_session_state() -> None:
 
 
 def get_active_station_id() -> str:
-    """Trả về ID trạm đang được chọn."""
+    """Return the currently selected station ID."""
     init_session_state()
     return st.session_state.active_station_id
 
 
 def set_active_station(station_id: str) -> None:
-    """Cập nhật trạm hoạt động — tất cả component rerender đồng bộ."""
+    """Update the active station — all components rerender in sync."""
     init_session_state()
     if station_id in get_station_ids():
         st.session_state.active_station_id = station_id
 
 
 def get_simulation_mode() -> SimulationMode:
-    """Trả về chế độ cảnh báo hiện tại (normal | alert)."""
+    """Return the current alert mode (normal | alert)."""
     init_session_state()
     return st.session_state.simulation_mode  # type: ignore[return-value]
 
 
 def set_simulation_mode(mode: SimulationMode) -> None:
-    """Chuyển đổi giữa điều kiện bình thường và cảnh báo AI."""
+    """Switch between normal conditions and AI intrusion alert."""
     init_session_state()
     st.session_state.simulation_mode = mode

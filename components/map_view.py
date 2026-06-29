@@ -1,6 +1,4 @@
-"""
-Bản đồ tương tác trạm giám sát — marker động theo trạm đang chọn và trạng thái độ mặn.
-"""
+"""Interactive monitoring map with dynamic station markers."""
 
 import folium
 import streamlit as st
@@ -15,7 +13,7 @@ CARTO_DARK_TILES = "CartoDB dark_matter"
 
 
 def _build_folium_map(snapshots: dict, active_id: str) -> folium.Map:
-    """Xây dựng bản đồ với marker, tooltip và popup theo từng trạm."""
+    """Build the map with per-station markers, tooltips, and popups."""
     m = folium.Map(
         location=[MAP_CONFIG["center_lat"], MAP_CONFIG["center_lon"]],
         zoom_start=int(MAP_CONFIG["zoom"]),
@@ -36,16 +34,16 @@ def _build_folium_map(snapshots: dict, active_id: str) -> folium.Map:
 
         tooltip_html = (
             f"<b>{sid}</b> ({station['name']})<br>"
-            f"Độ mặn: {snap['salinity_ppt']:.2f} ‰<br>"
-            f"Kết nối: {'Online' if snap['connectivity'] == 'online' else 'Offline'}"
+            f"Salinity: {snap['salinity_ppt']:.2f} ppt<br>"
+            f"Status: {'Online' if snap['connectivity'] == 'online' else 'Offline'}"
         )
         popup_html = (
             f"<div style='min-width:180px'>"
             f"<b>{sid}</b> — {station['name']}<br>"
             f"📍 {station['location_label']}<br>"
-            f"Độ mặn: <b>{snap['salinity_ppt']:.2f} ‰</b><br>"
+            f"Salinity: <b>{snap['salinity_ppt']:.2f} ppt</b><br>"
             f"pH: {snap['ph']:.2f} | "
-            f"Nhiệt độ: {snap['temperature_c']:.1f}°C"
+            f"Temp: {snap['temperature_c']:.1f}°C"
             f"</div>"
         )
 
@@ -76,7 +74,7 @@ def _build_folium_map(snapshots: dict, active_id: str) -> folium.Map:
 
 
 def _handle_map_click(map_data: dict | None) -> None:
-    """Đồng bộ trạm khi người dùng chọn marker trên bản đồ."""
+    """Sync active station when a map marker is clicked."""
     if not map_data or not map_data.get("last_object_clicked"):
         return
 
@@ -98,13 +96,13 @@ def _handle_map_click(map_data: dict | None) -> None:
 
 
 def render_map_and_nav() -> None:
-    """Render bản đồ và thanh điều hướng trạm."""
+    """Render the monitoring map and quick station navigation."""
     mode = get_simulation_mode()
     active_id = get_active_station_id()
     snapshots = get_all_stations_snapshots(mode)
 
-    st.markdown("#### 🗺️ Bản đồ trạm giám sát — Bến Tre")
-    st.caption("Theo dõi thời gian thực · 4 trạm IoT · Tỉnh Bến Tre")
+    st.markdown("#### 🗺️ Monitoring Station Map — Ben Tre")
+    st.caption("Real-time monitoring · 4 IoT sensor stations · Ben Tre Province")
 
     folium_map = _build_folium_map(snapshots, active_id)
     map_output = st_folium(
@@ -117,7 +115,7 @@ def render_map_and_nav() -> None:
     )
     _handle_map_click(map_output)
 
-    st.markdown("##### Chuyển trạm nhanh")
+    st.markdown("##### Quick Station Switch")
     station_ids = get_station_ids()
     cols = st.columns(len(station_ids))
 
