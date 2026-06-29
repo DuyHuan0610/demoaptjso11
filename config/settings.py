@@ -38,7 +38,7 @@ THRESHOLDS: ThresholdConfig = {
     "ph_alkaline_min": 8.5,
 }
 
-# Trung tâm bản đồ: tỉnh Bến Tre — tile Carto Dark Matter (miễn phí, không API key)
+# Trung tâm bản đồ: tỉnh Bến Tre
 MAP_CONFIG: MapConfig = {
     "tile_provider": "CartoDB dark_matter",
     "center_lat": 10.08,

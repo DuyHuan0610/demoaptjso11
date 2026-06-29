@@ -1,6 +1,5 @@
 """
-Bản đồ tương tác Folium + Carto Dark Matter (miễn phí, không cần API key).
-Marker thay đổi kích thước/màu theo trạm đang chọn và trạng thái độ mặn.
+Bản đồ tương tác trạm giám sát — marker động theo trạm đang chọn và trạng thái độ mặn.
 """
 
 import folium
@@ -12,12 +11,11 @@ from config.stations import STATIONS, get_station_ids
 from data.simulation import get_all_stations_snapshots
 from state.session_manager import get_active_station_id, get_simulation_mode, set_active_station
 
-# Tile Carto Dark Matter — CDN công khai, không yêu cầu đăng ký hay thẻ tín dụng
 CARTO_DARK_TILES = "CartoDB dark_matter"
 
 
 def _build_folium_map(snapshots: dict, active_id: str) -> folium.Map:
-    """Xây dựng bản đồ Folium với marker động và tooltip tùy chỉnh."""
+    """Xây dựng bản đồ với marker, tooltip và popup theo từng trạm."""
     m = folium.Map(
         location=[MAP_CONFIG["center_lat"], MAP_CONFIG["center_lon"]],
         zoom_start=int(MAP_CONFIG["zoom"]),
@@ -51,7 +49,6 @@ def _build_folium_map(snapshots: dict, active_id: str) -> folium.Map:
             f"</div>"
         )
 
-        # Vòng glow nhẹ cho trạm đang chọn
         if is_active:
             folium.CircleMarker(
                 location=[station["latitude"], station["longitude"]],
@@ -79,7 +76,7 @@ def _build_folium_map(snapshots: dict, active_id: str) -> folium.Map:
 
 
 def _handle_map_click(map_data: dict | None) -> None:
-    """Đồng bộ trạm khi người dùng click marker trên bản đồ."""
+    """Đồng bộ trạm khi người dùng chọn marker trên bản đồ."""
     if not map_data or not map_data.get("last_object_clicked"):
         return
 
@@ -101,13 +98,13 @@ def _handle_map_click(map_data: dict | None) -> None:
 
 
 def render_map_and_nav() -> None:
-    """Render bản đồ và hàng nút chuyển trạm nhanh."""
+    """Render bản đồ và thanh điều hướng trạm."""
     mode = get_simulation_mode()
     active_id = get_active_station_id()
     snapshots = get_all_stations_snapshots(mode)
 
     st.markdown("#### 🗺️ Bản đồ trạm giám sát — Bến Tre")
-    st.caption("Bản đồ Carto Dark Matter · OpenStreetMap — miễn phí, không cần API key")
+    st.caption("Theo dõi thời gian thực · 4 trạm IoT · Tỉnh Bến Tre")
 
     folium_map = _build_folium_map(snapshots, active_id)
     map_output = st_folium(

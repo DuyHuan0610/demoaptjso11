@@ -1,6 +1,5 @@
 """
-Sidebar: điều khiển mô phỏng và thông tin hệ thống.
-Toggle chuyển đổi giữa điều kiện bình thường và cảnh báo AI.
+Sidebar — điều khiển cảnh báo AI và thông tin trạm đang giám sát.
 """
 
 import streamlit as st
@@ -15,21 +14,20 @@ from state.session_manager import (
 
 
 def render_sidebar() -> None:
-    """Render sidebar với toggle mô phỏng và metadata trạm."""
+    """Render sidebar với toggle cảnh báo AI và metadata trạm."""
     with st.sidebar:
         st.markdown("### ⚙️ Bảng điều khiển")
         st.markdown("---")
 
-        # Toggle mô phỏng: Normal ↔ AI Alert
         current_mode = get_simulation_mode()
         is_alert = current_mode == "alert"
 
-        st.markdown("**Chế độ mô phỏng**")
+        st.markdown("**Dự báo xâm nhập mặn**")
         alert_enabled = st.toggle(
-            "AI Predicted Salinity Intrusion Alert",
+            "Kích hoạt cảnh báo AI",
             value=is_alert,
-            help="Bật để mô phỏng cảnh báo xâm nhập mặn theo dự báo AI",
-            key="simulation_toggle",
+            help="Hiển thị dự báo xâm nhập mặn 7 ngày và khuyến nghị khẩn cấp",
+            key="alert_toggle",
         )
 
         new_mode = "alert" if alert_enabled else "normal"
@@ -37,7 +35,6 @@ def render_sidebar() -> None:
             set_simulation_mode(new_mode)
             st.rerun()
 
-        # Hiển thị trạng thái hiện tại
         if alert_enabled:
             st.error("🔴 Trạng thái: CẢNH BÁO XÂM NHẬP MẶN")
         else:
